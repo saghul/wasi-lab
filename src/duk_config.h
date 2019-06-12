@@ -5,55 +5,11 @@
  *  Git describe: ec6fa10
  *  Git branch: master
  *
- *  Supported platforms:
- *      - Mac OSX, iPhone, Darwin
- *      - Orbis
- *      - OpenBSD
- *      - Generic BSD
- *      - Atari ST TOS
- *      - AmigaOS
- *      - Durango (XboxOne)
- *      - Windows
- *      - Flashplayer (Crossbridge)
- *      - QNX
- *      - TI-Nspire
- *      - Emscripten
- *      - Android
- *      - Linux
- *      - Solaris
- *      - AIX
- *      - HPUX
- *      - Generic POSIX
- *      - Cygwin
- *      - Generic UNIX
- *      - Generic fallback
+ *  Platform: posix
  *
- *  Supported architectures:
- *      - x86
- *      - x64
- *      - x32
- *      - ARM 32-bit
- *      - ARM 64-bit
- *      - MIPS 32-bit
- *      - MIPS 64-bit
- *      - PowerPC 32-bit
- *      - PowerPC 64-bit
- *      - SPARC 32-bit
- *      - SPARC 64-bit
- *      - SuperH
- *      - Motorola 68k
- *      - Emscripten
- *      - Generic
+ *  Architecture: x86
  *
- *  Supported compilers:
- *      - Clang
- *      - GCC
- *      - MSVC
- *      - Emscripten
- *      - TinyC
- *      - VBCC
- *      - Bruce's C compiler
- *      - Generic
+ *  Compiler: clang
  *
  */
 
@@ -68,73 +24,6 @@
 /* not configured for DLL build */
 #undef DUK_F_DLL_BUILD
 
-/* Apple OSX, iOS */
-#if defined(__APPLE__)
-#define DUK_F_APPLE
-#endif
-
-/* FreeBSD */
-#if defined(__FreeBSD__) || defined(__FreeBSD)
-#define DUK_F_FREEBSD
-#endif
-
-/* Orbis (PS4) variant */
-#if defined(DUK_F_FREEBSD) && defined(__ORBIS__)
-#define DUK_F_ORBIS
-#endif
-
-/* OpenBSD */
-#if defined(__OpenBSD__) || defined(__OpenBSD)
-#define DUK_F_OPENBSD
-#endif
-
-/* NetBSD */
-#if defined(__NetBSD__) || defined(__NetBSD)
-#define DUK_F_NETBSD
-#endif
-
-/* BSD variant */
-#if defined(DUK_F_FREEBSD) || defined(DUK_F_NETBSD) || defined(DUK_F_OPENBSD) || \
-    defined(__bsdi__) || defined(__DragonFly__)
-#define DUK_F_BSD
-#endif
-
-/* Atari ST TOS.  __TOS__ defined by PureC.  No platform define in VBCC
- * apparently, so to use with VBCC user must define __TOS__ manually.
-  */
-#if defined(__TOS__)
-#define DUK_F_TOS
-#endif
-
-/* Motorola 68K.  Not defined by VBCC, so user must define one of these
- * manually when using VBCC.
- */
-#if defined(__m68k__) || defined(M68000) || defined(__MC68K__)
-#define DUK_F_M68K
-#endif
-
-/* AmigaOS.  Neither AMIGA nor __amigaos__ is defined on VBCC, so user must
- * define 'AMIGA' manually when using VBCC.
- */
-#if defined(AMIGA) || defined(__amigaos__)
-#define DUK_F_AMIGAOS
-#endif
-
-/* PowerPC */
-#if defined(__powerpc) || defined(__powerpc__) || defined(__PPC__)
-#define DUK_F_PPC
-#if defined(__PPC64__) || defined(__LP64__) || defined(_LP64)
-#define DUK_F_PPC64
-#else
-#define DUK_F_PPC32
-#endif
-#endif
-
-/* Durango (Xbox One) */
-#if defined(_DURANGO) || defined(_XBOX_ONE)
-#define DUK_F_DURANGO
-#endif
-
 /* Windows, both 32-bit and 64-bit */
 #if defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64) || \
     defined(__WIN32__) || defined(__TOS_WIN__) || defined(__WINDOWS__)
@@ -146,81 +35,27 @@
 #endif
 #endif
 
-/* Flash player (e.g. Crossbridge) */
-#if defined(__FLASHPLAYER__)
-#define DUK_F_FLASHPLAYER
-#endif
-
-/* QNX */
-#if defined(__QNX__)
-#define DUK_F_QNX
-#endif
-
-/* TI-Nspire (using Ndless) */
-#if defined(_TINSPIRE)
-#define DUK_F_TINSPIRE
-#endif
-
-/* Emscripten (provided explicitly by user), improve if possible */
-#if defined(EMSCRIPTEN)
-#define DUK_F_EMSCRIPTEN
-#endif
-
 /* BCC (Bruce's C compiler): this is a "torture target" for compilation */
 #if defined(__BCC__) || defined(__BCC_VERSION__)
 #define DUK_F_BCC
 #endif
 
-#if defined(ANDROID) || defined(__ANDROID__)
-#define DUK_F_ANDROID
+/* Atari ST TOS.  __TOS__ defined by PureC.  No platform define in VBCC
+ * apparently, so to use with VBCC user must define __TOS__ manually.
+  */
+#if defined(__TOS__)
+#define DUK_F_TOS
 #endif
 
-/* Linux */
-#if defined(__linux) || defined(__linux__) || defined(linux)
-#define DUK_F_LINUX
-#endif
-
-/* illumos / Solaris */
-#if defined(__sun) && defined(__SVR4)
-#define DUK_F_SUN
-#if defined(__SUNPRO_C) && (__SUNPRO_C < 0x550)
-#define DUK_F_OLD_SOLARIS
-/* Defines _ILP32 / _LP64 required by DUK_F_X86/DUK_F_X64.  Platforms
- * are processed before architectures, so this happens before the
- * DUK_F_X86/DUK_F_X64 detection is emitted.
- */
-#include <sys/isa_defs.h>
+/* stdint.h not available */
+#if defined(DUK_F_WINDOWS) && defined(_MSC_VER)
+#if (_MSC_VER < 1700)
+/* VS2012+ has stdint.h, < VS2012 does not (but it's available for download). */
+#define DUK_F_NO_STDINT_H
 #endif
 #endif
-
-/* AIX */
-#if defined(_AIX)
-/* defined(__xlc__) || defined(__IBMC__): works but too wide */
-#define DUK_F_AIX
-#endif
-
-/* HPUX */
-#if defined(__hpux)
-#define DUK_F_HPUX
-#if defined(__ia64)
-#define DUK_F_HPUX_ITANIUM
-#endif
-#endif
-
-/* POSIX */
-#if defined(__posix)
-#define DUK_F_POSIX
-#endif
-
-/* Cygwin */
-#if defined(__CYGWIN__)
-#define DUK_F_CYGWIN
-#endif
-
-/* Generic Unix (includes Cygwin) */
-#if defined(__unix) || defined(__unix__) || defined(unix) || \
-    defined(DUK_F_LINUX) || defined(DUK_F_BSD)
-#define DUK_F_UNIX
+#if !defined(DUK_F_NO_STDINT_H) && (defined(DUK_F_TOS) || defined(DUK_F_BCC))
+#define DUK_F_NO_STDINT_H
 #endif
 
 /* Intel x86 (32-bit), x64 (64-bit) or x32 (64-bit but 32-bit pointers),
@@ -250,49 +85,9 @@
 #endif
 #endif
 
-/* ARM */
-#if defined(__arm__) || defined(__thumb__) || defined(_ARM) || defined(_M_ARM) || defined(_M_ARM64) || defined(__aarch64__)
-#define DUK_F_ARM
-#if defined(__LP64__) || defined(_LP64) || defined(__arm64) || defined(__arm64__) || defined(_M_ARM64) || defined(__aarch64__)
-#define DUK_F_ARM64
-#else
-#define DUK_F_ARM32
-#endif
-#endif
-
-/* MIPS.  Related defines: __MIPSEB__, __MIPSEL__, __mips_isa_rev, __LP64__ */
-#if defined(__mips__) || defined(mips) || defined(_MIPS_ISA) || \
-    defined(_R3000) || defined(_R4000) || defined(_R5900) || \
-    defined(_MIPS_ISA_MIPS1) || defined(_MIPS_ISA_MIPS2) || \
-    defined(_MIPS_ISA_MIPS3) || defined(_MIPS_ISA_MIPS4) || \
-    defined(__mips) || defined(__MIPS__)
-#define DUK_F_MIPS
-#if defined(__LP64__) || defined(_LP64) || defined(__mips64) || \
-    defined(__mips64__) || defined(__mips_n64)
-#define DUK_F_MIPS64
-#else
-#define DUK_F_MIPS32
-#endif
-#endif
-
-/* SPARC */
-#if defined(sparc) || defined(__sparc) || defined(__sparc__)
-#define DUK_F_SPARC
-#if defined(__LP64__) || defined(_LP64)
-#define DUK_F_SPARC64
-#else
-#define DUK_F_SPARC32
-#endif
-#endif
-
-/* SuperH */
-#if defined(__sh__) || \
-    defined(__sh1__) || defined(__SH1__) || \
-    defined(__sh2__) || defined(__SH2__) || \
-    defined(__sh3__) || defined(__SH3__) || \
-    defined(__sh4__) || defined(__SH4__) || \
-    defined(__sh5__) || defined(__SH5__)
-#define DUK_F_SUPERH
+/* FreeBSD */
+#if defined(__FreeBSD__) || defined(__FreeBSD)
+#define DUK_F_FREEBSD
 #endif
 
 /* Clang */
@@ -329,9 +124,70 @@
 #endif
 #endif
 
-/* MinGW.  Also GCC flags (DUK_F_GCC) are enabled now. */
-#if defined(__MINGW32__) || defined(__MINGW64__)
-#define DUK_F_MINGW
+/* ARM */
+#if defined(__arm__) || defined(__thumb__) || defined(_ARM) || defined(_M_ARM) || defined(_M_ARM64) || defined(__aarch64__)
+#define DUK_F_ARM
+#if defined(__LP64__) || defined(_LP64) || defined(__arm64) || defined(__arm64__) || defined(_M_ARM64) || defined(__aarch64__)
+#define DUK_F_ARM64
+#else
+#define DUK_F_ARM32
+#endif
+#endif
+
+/* VBCC */
+#if defined(__VBCC__)
+#define DUK_F_VBCC
+#endif
+
+/* AIX */
+#if defined(_AIX)
+/* defined(__xlc__) || defined(__IBMC__): works but too wide */
+#define DUK_F_AIX
+#endif
+
+/* illumos / Solaris */
+#if defined(__sun) && defined(__SVR4)
+#define DUK_F_SUN
+#if defined(__SUNPRO_C) && (__SUNPRO_C < 0x550)
+#define DUK_F_OLD_SOLARIS
+/* Defines _ILP32 / _LP64 required by DUK_F_X86/DUK_F_X64.  Platforms
+ * are processed before architectures, so this happens before the
+ * DUK_F_X86/DUK_F_X64 detection is emitted.
+ */
+#include <sys/isa_defs.h>
+#endif
+#endif
+
+/* PowerPC */
+#if defined(__powerpc) || defined(__powerpc__) || defined(__PPC__)
+#define DUK_F_PPC
+#if defined(__PPC64__) || defined(__LP64__) || defined(_LP64)
+#define DUK_F_PPC64
+#else
+#define DUK_F_PPC32
+#endif
+#endif
+
+/* Motorola 68K.  Not defined by VBCC, so user must define one of these
+ * manually when using VBCC.
+ */
+#if defined(__m68k__) || defined(M68000) || defined(__MC68K__)
+#define DUK_F_M68K
+#endif
+
+/* HPUX */
+#if defined(__hpux)
+#define DUK_F_HPUX
+#if defined(__ia64)
+#define DUK_F_HPUX_ITANIUM
+#endif
+#endif
+
+/* AmigaOS.  Neither AMIGA nor __amigaos__ is defined on VBCC, so user must
+ * define 'AMIGA' manually when using VBCC.
+ */
+#if defined(AMIGA) || defined(__amigaos__)
+#define DUK_F_AMIGAOS
 #endif
 
 /* MSVC */
@@ -350,15 +206,8 @@
 #endif
 #endif  /* _MSC_VER */
 
-/* TinyC */
-#if defined(__TINYC__)
-/* http://bellard.org/tcc/tcc-doc.html#SEC9 */
-#define DUK_F_TINYC
-#endif
-
-/* VBCC */
-#if defined(__VBCC__)
-#define DUK_F_VBCC
+#if defined(ANDROID) || defined(__ANDROID__)
+#define DUK_F_ANDROID
 #endif
 
 /* Atari Mint */
@@ -366,8 +215,18 @@
 #define DUK_F_MINT
 #endif
 
+/* MinGW.  Also GCC flags (DUK_F_GCC) are enabled now. */
+#if defined(__MINGW32__) || defined(__MINGW64__)
+#define DUK_F_MINGW
+#endif
+
+/* NetBSD */
+#if defined(__NetBSD__) || defined(__NetBSD)
+#define DUK_F_NETBSD
+#endif
+
 /*
- *  Platform autodetection
+ *  Platform: posix
  */
 
 /* Workaround for older C++ compilers before including <inttypes.h>,
@@ -380,416 +239,6 @@
 #define __STDC_CONSTANT_MACROS
 #endif
 
-#if defined(DUK_F_APPLE)
-/* --- Mac OSX, iPhone, Darwin --- */
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <TargetConditionals.h>
-#include <architecture/byte_order.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-/* http://stackoverflow.com/questions/5919996/how-to-detect-reliably-mac-os-x-ios-linux-windows-in-c-preprocessor */
-#if TARGET_IPHONE_SIMULATOR
-#define DUK_USE_OS_STRING "iphone-sim"
-#elif TARGET_OS_IPHONE
-#define DUK_USE_OS_STRING "iphone"
-#elif TARGET_OS_MAC
-#define DUK_USE_OS_STRING "osx"
-#else
-#define DUK_USE_OS_STRING "osx-unknown"
-#endif
-
-/* Use _setjmp() on Apple by default, see GH-55. */
-#define DUK_JMPBUF_TYPE       jmp_buf
-#define DUK_SETJMP(jb)        _setjmp((jb))
-#define DUK_LONGJMP(jb)       _longjmp((jb), 1)
-#elif defined(DUK_F_ORBIS)
-/* --- Orbis --- */
-/* Orbis = PS4 */
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_S
-/* no parsing (not an error) */
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <sys/types.h>
-#include <machine/endian.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_OS_STRING  "orbis"
-#elif defined(DUK_F_OPENBSD)
-/* --- OpenBSD --- */
-/* http://www.monkey.org/openbsd/archive/ports/0401/msg00089.html */
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <sys/types.h>
-#include <sys/endian.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_OS_STRING  "openbsd"
-#elif defined(DUK_F_BSD)
-/* --- Generic BSD --- */
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <sys/types.h>
-#include <sys/endian.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_OS_STRING  "bsd"
-#elif defined(DUK_F_TOS)
-/* --- Atari ST TOS --- */
-#define DUK_USE_DATE_NOW_TIME
-#define DUK_USE_DATE_TZO_GMTIME
-/* no parsing (not an error) */
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <time.h>
-
-#define DUK_USE_OS_STRING  "tos"
-
-/* TOS on M68K is always big endian. */
-#if !defined(DUK_USE_BYTEORDER) && defined(DUK_F_M68K)
-#define DUK_USE_BYTEORDER 3
-#endif
-#elif defined(DUK_F_AMIGAOS)
-/* --- AmigaOS --- */
-#if defined(DUK_F_M68K)
-/* AmigaOS on M68k */
-#define DUK_USE_DATE_NOW_TIME
-#define DUK_USE_DATE_TZO_GMTIME
-/* no parsing (not an error) */
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <time.h>
-#elif defined(DUK_F_PPC)
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <time.h>
-#if !defined(UINTPTR_MAX)
-#define UINTPTR_MAX UINT_MAX
-#endif
-#else
-#error AmigaOS but not M68K/PPC, not supported now
-#endif
-
-#define DUK_USE_OS_STRING "amigaos"
-
-/* AmigaOS on M68K or PPC is always big endian. */
-#if !defined(DUK_USE_BYTEORDER) && (defined(DUK_F_M68K) || defined(DUK_F_PPC))
-#define DUK_USE_BYTEORDER 3
-#endif
-#elif defined(DUK_F_DURANGO)
-/* --- Durango (XboxOne) --- */
-/* Durango = XboxOne
- * Configuration is nearly identical to Windows, except for
- * DUK_USE_DATE_TZO_WINDOWS.
- */
-
-/* Initial fix: disable secure CRT related warnings when compiling Duktape
- * itself (must be defined before including Windows headers).  Don't define
- * for user code including duktape.h.
- */
-#if defined(DUK_COMPILING_DUKTAPE) && !defined(_CRT_SECURE_NO_WARNINGS)
-#define _CRT_SECURE_NO_WARNINGS
-#endif
-
-/* MSVC does not have sys/param.h */
-#define DUK_USE_DATE_NOW_WINDOWS
-#define DUK_USE_DATE_TZO_WINDOWS_NO_DST
-/* Note: PRS and FMT are intentionally left undefined for now.  This means
- * there is no platform specific date parsing/formatting but there is still
- * the ISO 8601 standard format.
- */
-#if defined(DUK_COMPILING_DUKTAPE)
-/* Only include when compiling Duktape to avoid polluting application build
- * with a lot of unnecessary defines.
- */
-#include <windows.h>
-#endif
-
-#define DUK_USE_OS_STRING "durango"
-
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 1
-#endif
-#elif defined(DUK_F_WINDOWS)
-/* --- Windows --- */
-/* Windows version can't obviously be determined at compile time,
- * but _WIN32_WINNT indicates the minimum version targeted:
- * - https://msdn.microsoft.com/en-us/library/6sehtctf.aspx
- */
-
-/* Initial fix: disable secure CRT related warnings when compiling Duktape
- * itself (must be defined before including Windows headers).  Don't define
- * for user code including duktape.h.
- */
-#if defined(DUK_COMPILING_DUKTAPE) && !defined(_CRT_SECURE_NO_WARNINGS)
-#define _CRT_SECURE_NO_WARNINGS
-#endif
-
-/* Windows 32-bit and 64-bit are currently the same. */
-/* MSVC does not have sys/param.h */
-
-#if defined(DUK_COMPILING_DUKTAPE)
-/* Only include when compiling Duktape to avoid polluting application build
- * with a lot of unnecessary defines.
- */
-#include <windows.h>
-#endif
-
-/* GetSystemTimePreciseAsFileTime() available from Windows 8:
- * https://msdn.microsoft.com/en-us/library/windows/desktop/hh706895(v=vs.85).aspx
- */
-#if defined(DUK_USE_DATE_NOW_WINDOWS_SUBMS) || defined(DUK_USE_DATE_NOW_WINDOWS)
-/* User forced provider. */
-#else
-#if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0602)
-#define DUK_USE_DATE_NOW_WINDOWS_SUBMS
-#else
-#define DUK_USE_DATE_NOW_WINDOWS
-#endif
-#endif
-
-#define DUK_USE_DATE_TZO_WINDOWS
-
-/* Note: PRS and FMT are intentionally left undefined for now.  This means
- * there is no platform specific date parsing/formatting but there is still
- * the ISO 8601 standard format.
- */
-
-/* QueryPerformanceCounter() may go backwards in Windows XP, so enable for
- * Vista and later: https://msdn.microsoft.com/en-us/library/windows/desktop/dn553408(v=vs.85).aspx#qpc_support_in_windows_versions
- */
-#if !defined(DUK_USE_GET_MONOTONIC_TIME_WINDOWS_QPC) && \
-    defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0600)
-#define DUK_USE_GET_MONOTONIC_TIME_WINDOWS_QPC
-#endif
-
-#define DUK_USE_OS_STRING "windows"
-
-/* On Windows, assume we're little endian.  Even Itanium which has a
- * configurable endianness runs little endian in Windows.
- */
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 1
-#endif
-#elif defined(DUK_F_FLASHPLAYER)
-/* --- Flashplayer (Crossbridge) --- */
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <endian.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_OS_STRING "flashplayer"
-
-#if !defined(DUK_USE_BYTEORDER) && defined(DUK_F_FLASHPLAYER)
-#define DUK_USE_BYTEORDER 1
-#endif
-#elif defined(DUK_F_QNX)
-/* --- QNX --- */
-#if defined(DUK_F_QNX) && defined(DUK_COMPILING_DUKTAPE)
-/* See: /opt/qnx650/target/qnx6/usr/include/sys/platform.h */
-#define _XOPEN_SOURCE    600
-#define _POSIX_C_SOURCE  200112L
-#endif
-
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_OS_STRING "qnx"
-#elif defined(DUK_F_TINSPIRE)
-/* --- TI-Nspire --- */
-#if defined(DUK_COMPILING_DUKTAPE) && !defined(_XOPEN_SOURCE)
-#define _XOPEN_SOURCE    /* e.g. strptime */
-#endif
-
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_OS_STRING "tinspire"
-#elif defined(DUK_F_EMSCRIPTEN)
-/* --- Emscripten --- */
-#if defined(DUK_COMPILING_DUKTAPE)
-#if !defined(_POSIX_C_SOURCE)
-#define _POSIX_C_SOURCE  200809L
-#endif
-#if !defined(_GNU_SOURCE)
-#define _GNU_SOURCE      /* e.g. getdate_r */
-#endif
-#if !defined(_XOPEN_SOURCE)
-#define _XOPEN_SOURCE    /* e.g. strptime */
-#endif
-#endif  /* DUK_COMPILING_DUKTAPE */
-
-#include <sys/types.h>
-#if defined(DUK_F_BCC)
-/* no endian.h */
-#else
-#include <endian.h>
-#endif  /* DUK_F_BCC */
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-#include <stdint.h>
-
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-
-#define DUK_USE_OS_STRING "emscripten"
-#elif defined(DUK_F_ANDROID)
-/* --- Android --- */
-#if defined(DUK_COMPILING_DUKTAPE)
-#if !defined(_POSIX_C_SOURCE)
-#define _POSIX_C_SOURCE  200809L
-#endif
-#if !defined(_GNU_SOURCE)
-#define _GNU_SOURCE      /* e.g. getdate_r */
-#endif
-#if !defined(_XOPEN_SOURCE)
-#define _XOPEN_SOURCE    /* e.g. strptime */
-#endif
-#endif  /* DUK_COMPILING_DUKTAPE */
-
-#include <sys/types.h>
-#if defined(DUK_F_BCC)
-/* no endian.h or stdint.h */
-#else
-#include <endian.h>
-#include <stdint.h>
-#endif  /* DUK_F_BCC */
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-
-#if 0  /* XXX: safe condition? */
-#define DUK_USE_GET_MONOTONIC_TIME_CLOCK_GETTIME
-#endif
-
-#define DUK_USE_OS_STRING "android"
-#elif defined(DUK_F_LINUX)
-/* --- Linux --- */
-#if defined(DUK_COMPILING_DUKTAPE)
-#if !defined(_POSIX_C_SOURCE)
-#define _POSIX_C_SOURCE  200809L
-#endif
-#if !defined(_GNU_SOURCE)
-#define _GNU_SOURCE      /* e.g. getdate_r */
-#endif
-#if !defined(_XOPEN_SOURCE)
-#define _XOPEN_SOURCE    /* e.g. strptime */
-#endif
-#endif  /* DUK_COMPILING_DUKTAPE */
-
-#include <sys/types.h>
-#if defined(DUK_F_BCC)
-/* no endian.h or stdint.h */
-#else
-#include <endian.h>
-#include <stdint.h>
-#endif  /* DUK_F_BCC */
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-
-#if 0  /* XXX: safe condition? */
-#define DUK_USE_GET_MONOTONIC_TIME_CLOCK_GETTIME
-#endif
-
-#define DUK_USE_OS_STRING "linux"
-#elif defined(DUK_F_SUN)
-/* --- Solaris --- */
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-
-#include <sys/types.h>
-#if defined(DUK_F_OLD_SOLARIS)
-/* Old Solaris with no endian.h, stdint.h */
-#define DUK_F_NO_STDINT_H
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 3
-#endif
-#else  /* DUK_F_OLD_SOLARIS */
-#include <ast/endian.h>
-#endif  /* DUK_F_OLD_SOLARIS */
-
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_OS_STRING "solaris"
-#elif defined(DUK_F_AIX)
-/* --- AIX --- */
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 3
-#endif
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_OS_STRING "aix"
-#elif defined(DUK_F_HPUX)
-/* --- HPUX --- */
-#define DUK_F_NO_STDINT_H
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 3
-#endif
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_USE_OS_STRING "hpux"
-#elif defined(DUK_F_POSIX)
-/* --- Generic POSIX --- */
 #define DUK_USE_DATE_NOW_GETTIMEOFDAY
 #define DUK_USE_DATE_TZO_GMTIME_R
 #define DUK_USE_DATE_PRS_STRPTIME
@@ -801,60 +250,12 @@
 #include <time.h>
 
 #define DUK_USE_OS_STRING "posix"
-#elif defined(DUK_F_CYGWIN)
-/* --- Cygwin --- */
-/* don't use strptime() for now */
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <sys/types.h>
-#include <endian.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <time.h>
-
-#define DUK_JMPBUF_TYPE       jmp_buf
-#define DUK_SETJMP(jb)        _setjmp((jb))
-#define DUK_LONGJMP(jb)       _longjmp((jb), 1)
-
-#define DUK_USE_OS_STRING "windows"
-#elif defined(DUK_F_UNIX)
-/* --- Generic UNIX --- */
-#define DUK_USE_DATE_NOW_GETTIMEOFDAY
-#define DUK_USE_DATE_TZO_GMTIME_R
-#define DUK_USE_DATE_PRS_STRPTIME
-#define DUK_USE_DATE_FMT_STRFTIME
-#include <time.h>
-#include <sys/time.h>
-#define DUK_USE_OS_STRING "unknown"
-#else
-/* --- Generic fallback --- */
-/* The most portable current time provider is time(), but it only has a
- * one second resolution.
- */
-#define DUK_USE_DATE_NOW_TIME
-
-/* The most portable way to figure out local time offset is gmtime(),
- * but it's not thread safe so use with caution.
- */
-#define DUK_USE_DATE_TZO_GMTIME
-
-/* Avoid custom date parsing and formatting for portability. */
-#undef DUK_USE_DATE_PRS_STRPTIME
-#undef DUK_USE_DATE_FMT_STRFTIME
-
-/* Rely on C89 headers only; time.h must be here. */
-#include <time.h>
-
-#define DUK_USE_OS_STRING "unknown"
-#endif  /* autodetect platform */
 
 /* Shared includes: C89 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>  /* varargs */
-#include <setjmp.h>
 #include <stddef.h>  /* e.g. ptrdiff_t */
 #include <math.h>
 #include <limits.h>
@@ -875,11 +276,9 @@
 /* <exception> is only included if needed, based on DUK_USE_xxx flags. */
 
 /*
- *  Architecture autodetection
+ *  Architecture: x86
  */
 
-#if defined(DUK_F_X86)
-/* --- x86 --- */
 #define DUK_USE_ARCH_STRING "x86"
 #if !defined(DUK_USE_BYTEORDER)
 #define DUK_USE_BYTEORDER 1
@@ -895,109 +294,11 @@
 #undef DUK_USE_PACKED_TVAL
 #endif
 #define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_X64)
-/* --- x64 --- */
-#define DUK_USE_ARCH_STRING "x64"
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 1
-#endif
-#undef DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_X32)
-/* --- x32 --- */
-#define DUK_USE_ARCH_STRING "x32"
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 1
-#endif
-#define DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_ARM32)
-/* --- ARM 32-bit --- */
-#define DUK_USE_ARCH_STRING "arm32"
-/* Byte order varies, so rely on autodetect. */
-#define DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_ARM64)
-/* --- ARM 64-bit --- */
-#define DUK_USE_ARCH_STRING "arm64"
-/* Byte order varies, so rely on autodetect. */
-#undef DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_MIPS32)
-/* --- MIPS 32-bit --- */
-#define DUK_USE_ARCH_STRING "mips32"
-/* MIPS byte order varies so rely on autodetection. */
-#define DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_MIPS64)
-/* --- MIPS 64-bit --- */
-#define DUK_USE_ARCH_STRING "mips64"
-/* MIPS byte order varies so rely on autodetection. */
-#undef DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_PPC32)
-/* --- PowerPC 32-bit --- */
-#define DUK_USE_ARCH_STRING "ppc32"
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 3
-#endif
-#define DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_PPC64)
-/* --- PowerPC 64-bit --- */
-#define DUK_USE_ARCH_STRING "ppc64"
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 3
-#endif
-#undef DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_SPARC32)
-/* --- SPARC 32-bit --- */
-#define DUK_USE_ARCH_STRING "sparc32"
-/* SPARC byte order varies so rely on autodetection. */
-#define DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_SPARC64)
-/* --- SPARC 64-bit --- */
-#define DUK_USE_ARCH_STRING "sparc64"
-/* SPARC byte order varies so rely on autodetection. */
-#undef DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_SUPERH)
-/* --- SuperH --- */
-#define DUK_USE_ARCH_STRING "sh"
-/* Byte order varies, rely on autodetection. */
-#define DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_M68K)
-/* --- Motorola 68k --- */
-#define DUK_USE_ARCH_STRING "m68k"
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 3
-#endif
-#define DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#elif defined(DUK_F_EMSCRIPTEN)
-/* --- Emscripten --- */
-#define DUK_USE_ARCH_STRING "emscripten"
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 1
-#endif
-#undef DUK_USE_PACKED_TVAL
-#define DUK_F_PACKED_TVAL_PROVIDED
-#else
-/* --- Generic --- */
-/* These are necessary wild guesses. */
-#define DUK_USE_ARCH_STRING "generic"
-/* Rely on autodetection for byte order, alignment, and packed tval. */
-#endif  /* autodetect architecture */
 
 /*
- *  Compiler autodetection
+ *  Compiler: clang
  */
 
-#if defined(DUK_F_CLANG)
-/* --- Clang --- */
 #if defined(DUK_F_C99) || defined(DUK_F_CPP11)
 /* C99 / C++11 and above: rely on va_copy() which is required. */
 #define DUK_VA_COPY(dest,src) va_copy(dest,src)
@@ -1105,409 +406,6 @@
 
 #undef DUK_USE_GCC_PRAGMAS
 #define DUK_USE_PACK_CLANG_ATTR
-#elif defined(DUK_F_GCC)
-/* --- GCC --- */
-#if defined(DUK_F_C99) || defined(DUK_F_CPP11)
-/* C99 / C++11 and above: rely on va_copy() which is required. */
-#define DUK_VA_COPY(dest,src) va_copy(dest,src)
-#else
-/* GCC: assume we have __va_copy() in non-C99 mode. */
-#define DUK_VA_COPY(dest,src) __va_copy(dest,src)
-#endif
-
-#if defined(DUK_F_GCC_VERSION) && (DUK_F_GCC_VERSION >= 20500L)
-/* since gcc-2.5 */
-#define DUK_NORETURN(decl)  decl __attribute__((noreturn))
-#endif
-
-#if defined(DUK_F_GCC_VERSION) && (DUK_F_GCC_VERSION >= 40500L)
-/* since gcc-4.5 */
-#define DUK_UNREACHABLE()  do { __builtin_unreachable(); } while (0)
-#endif
-
-#define DUK_USE_BRANCH_HINTS
-#if defined(DUK_F_GCC_VERSION) && (DUK_F_GCC_VERSION >= 40500L)
-/* GCC: test not very accurate; enable only in relatively recent builds
- * because of bugs in gcc-4.4 (http://lists.debian.org/debian-gcc/2010/04/msg00000.html)
- */
-#define DUK_LIKELY(x)    __builtin_expect((x), 1)
-#define DUK_UNLIKELY(x)  __builtin_expect((x), 0)
-#endif
-/* XXX: equivalent of clang __builtin_unpredictable? */
-
-#if (defined(DUK_F_C99) || defined(DUK_F_CPP11)) && \
-    defined(DUK_F_GCC_VERSION) && (DUK_F_GCC_VERSION >= 30101)
-#define DUK_NOINLINE        __attribute__((noinline))
-#define DUK_INLINE          inline
-#define DUK_ALWAYS_INLINE   inline __attribute__((always_inline))
-#endif
-
-#if (defined(DUK_F_C99) || defined(DUK_F_CPP11)) && \
-    defined(DUK_F_GCC_VERSION) && (DUK_F_GCC_VERSION >= 40300)
-#define DUK_HOT             __attribute__((hot))
-#define DUK_COLD            __attribute__((cold))
-#endif
-
-#if defined(DUK_F_DLL_BUILD) && defined(DUK_F_WINDOWS)
-/* MSVC dllexport/dllimport: appropriate __declspec depends on whether we're
- * compiling Duktape or the application.
- */
-#if defined(DUK_COMPILING_DUKTAPE)
-#define DUK_EXTERNAL_DECL  extern __declspec(dllexport)
-#define DUK_EXTERNAL       __declspec(dllexport)
-#else
-#define DUK_EXTERNAL_DECL  extern __declspec(dllimport)
-#define DUK_EXTERNAL       should_not_happen
-#endif
-#if defined(DUK_SINGLE_FILE)
-#define DUK_INTERNAL_DECL  static
-#define DUK_INTERNAL       static
-#else
-#define DUK_INTERNAL_DECL  extern
-#define DUK_INTERNAL       /*empty*/
-#endif
-#define DUK_LOCAL_DECL     static
-#define DUK_LOCAL          static
-#elif defined(DUK_F_GCC_VERSION) && (DUK_F_GCC_VERSION >= 40000)
-#define DUK_EXTERNAL_DECL  __attribute__ ((visibility("default"))) extern
-#define DUK_EXTERNAL       __attribute__ ((visibility("default")))
-#if defined(DUK_SINGLE_FILE)
-#if (defined(DUK_F_GCC_VERSION) && DUK_F_GCC_VERSION >= 30101) || defined(DUK_F_CLANG)
-/* Minimize warnings for unused internal functions with GCC >= 3.1.1 and
- * Clang.  Based on documentation it should suffice to have the attribute
- * in the declaration only, but in practice some warnings are generated unless
- * the attribute is also applied to the definition.
- */
-#define DUK_INTERNAL_DECL  static __attribute__ ((unused))
-#define DUK_INTERNAL       static __attribute__ ((unused))
-#else
-#define DUK_INTERNAL_DECL  static
-#define DUK_INTERNAL       static
-#endif
-#else
-#if (defined(DUK_F_GCC_VERSION) && DUK_F_GCC_VERSION >= 30101) || defined(DUK_F_CLANG)
-#define DUK_INTERNAL_DECL  __attribute__ ((visibility("hidden"))) __attribute__ ((unused)) extern
-#define DUK_INTERNAL       __attribute__ ((visibility("hidden"))) __attribute__ ((unused))
-#else
-#define DUK_INTERNAL_DECL  __attribute__ ((visibility("hidden"))) extern
-#define DUK_INTERNAL       __attribute__ ((visibility("hidden")))
-#endif
-#endif
-#define DUK_LOCAL_DECL     static
-#define DUK_LOCAL          static
-#endif
-
-#if defined(DUK_F_MINGW)
-#if defined(DUK_F_CPP)
-#define DUK_USE_COMPILER_STRING "mingw++"
-#else
-#define DUK_USE_COMPILER_STRING "mingw"
-#endif
-#else
-#if defined(DUK_F_CPP)
-#define DUK_USE_COMPILER_STRING "g++"
-#else
-#define DUK_USE_COMPILER_STRING "gcc"
-#endif
-#endif
-
-#undef DUK_USE_VARIADIC_MACROS
-#if defined(DUK_F_C99) || (defined(DUK_F_CPP11) && defined(__GNUC__))
-#define DUK_USE_VARIADIC_MACROS
-#endif
-
-#define DUK_USE_UNION_INITIALIZERS
-
-#undef DUK_USE_FLEX_C99
-#undef DUK_USE_FLEX_ZEROSIZE
-#undef DUK_USE_FLEX_ONESIZE
-#if defined(DUK_F_C99)
-#define DUK_USE_FLEX_C99
-#else
-#define DUK_USE_FLEX_ZEROSIZE
-#endif
-
-#if defined(DUK_F_GCC_VERSION) && (DUK_F_GCC_VERSION >= 40600)
-#define DUK_USE_GCC_PRAGMAS
-#else
-#undef DUK_USE_GCC_PRAGMAS
-#endif
-
-#define DUK_USE_PACK_GCC_ATTR
-#elif defined(DUK_F_MSVC)
-/* --- MSVC --- */
-/* http://msdn.microsoft.com/en-us/library/aa235362(VS.60).aspx */
-#define DUK_NORETURN(decl)  __declspec(noreturn) decl
-
-/* XXX: DUK_UNREACHABLE for msvc? */
-
-#undef DUK_USE_BRANCH_HINTS
-
-/* XXX: DUK_LIKELY, DUK_UNLIKELY for msvc? */
-/* XXX: DUK_NOINLINE, DUK_INLINE, DUK_ALWAYS_INLINE for msvc? */
-
-#if defined(DUK_F_DLL_BUILD) && defined(DUK_F_WINDOWS)
-/* MSVC dllexport/dllimport: appropriate __declspec depends on whether we're
- * compiling Duktape or the application.
- */
-#if defined(DUK_COMPILING_DUKTAPE)
-#define DUK_EXTERNAL_DECL  extern __declspec(dllexport)
-#define DUK_EXTERNAL       __declspec(dllexport)
-#else
-#define DUK_EXTERNAL_DECL  extern __declspec(dllimport)
-#define DUK_EXTERNAL       should_not_happen
-#endif
-#if defined(DUK_SINGLE_FILE)
-#define DUK_INTERNAL_DECL  static
-#define DUK_INTERNAL       static
-#else
-#define DUK_INTERNAL_DECL  extern
-#define DUK_INTERNAL       /*empty*/
-#endif
-#define DUK_LOCAL_DECL     static
-#define DUK_LOCAL          static
-#endif
-
-#if defined(DUK_F_CPP)
-#define DUK_USE_COMPILER_STRING "msvc++"
-#else
-#define DUK_USE_COMPILER_STRING "msvc"
-#endif
-
-#undef DUK_USE_VARIADIC_MACROS
-#if defined(DUK_F_C99)
-#define DUK_USE_VARIADIC_MACROS
-#elif defined(_MSC_VER) && (_MSC_VER >= 1400)
-/* VS2005+ should have variadic macros even when they're not C99. */
-#define DUK_USE_VARIADIC_MACROS
-#endif
-
-#undef DUK_USE_UNION_INITIALIZERS
-#if defined(_MSC_VER) && (_MSC_VER >= 1800)
-/* VS2013+ supports union initializers but there's a bug involving union-inside-struct:
- * https://connect.microsoft.com/VisualStudio/feedback/details/805981
- * The bug was fixed (at least) in VS2015 so check for VS2015 for now:
- * https://blogs.msdn.microsoft.com/vcblog/2015/07/01/c-compiler-front-end-fixes-in-vs2015/
- * Manually tested using VS2013, CL reports 18.00.31101, so enable for VS2013 too.
- */
-#define DUK_USE_UNION_INITIALIZERS
-#endif
-
-#undef DUK_USE_FLEX_C99
-#undef DUK_USE_FLEX_ZEROSIZE
-#undef DUK_USE_FLEX_ONESIZE
-#if defined(DUK_F_C99)
-#define DUK_USE_FLEX_C99
-#else
-#define DUK_USE_FLEX_ZEROSIZE
-#endif
-
-#undef DUK_USE_GCC_PRAGMAS
-
-#define DUK_USE_PACK_MSVC_PRAGMA
-
-/* These have been tested from VS2008 onwards; may work in older VS versions
- * too but not enabled by default.
- */
-#if defined(_MSC_VER) && (_MSC_VER >= 1500)
-#define DUK_NOINLINE        __declspec(noinline)
-#define DUK_INLINE          __inline
-#define DUK_ALWAYS_INLINE   __forceinline
-#endif
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1900)
-#define DUK_SNPRINTF     snprintf
-#define DUK_VSNPRINTF    vsnprintf
-#else
-/* (v)snprintf() is missing before MSVC 2015.  Note that _(v)snprintf() does
- * NOT NUL terminate on truncation, but Duktape code never assumes that.
- * http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010
- */
-#define DUK_SNPRINTF     _snprintf
-#define DUK_VSNPRINTF    _vsnprintf
-#endif
-
-/* Avoid warning when doing DUK_UNREF(some_function). */
-#if defined(_MSC_VER) && (_MSC_VER < 1500)
-#pragma warning(disable: 4100 4101 4550 4551)
-#define DUK_UNREF(x)
-#else
-#define DUK_UNREF(x)  do { __pragma(warning(suppress:4100 4101 4550 4551)) (x); } while (0)
-#endif
-
-/* Older versions of MSVC don't support the LL/ULL suffix. */
-#define DUK_U64_CONSTANT(x) x##ui64
-#define DUK_I64_CONSTANT(x) x##i64
-#elif defined(DUK_F_EMSCRIPTEN)
-/* --- Emscripten --- */
-#define DUK_NORETURN(decl)  decl __attribute__((noreturn))
-
-#if defined(__clang__) && defined(__has_builtin)
-#if __has_builtin(__builtin_unreachable)
-#define DUK_UNREACHABLE()  do { __builtin_unreachable(); } while (0)
-#endif
-#endif
-
-#define DUK_USE_BRANCH_HINTS
-#define DUK_LIKELY(x)    __builtin_expect((x), 1)
-#define DUK_UNLIKELY(x)  __builtin_expect((x), 0)
-#if defined(__clang__) && defined(__has_builtin)
-#if __has_builtin(__builtin_unpredictable)
-#define DUK_UNPREDICTABLE(x)  __builtin_unpredictable((x))
-#endif
-#endif
-
-#if defined(DUK_F_C99) || defined(DUK_F_CPP11)
-#define DUK_NOINLINE        __attribute__((noinline))
-#define DUK_INLINE          inline
-#define DUK_ALWAYS_INLINE   inline __attribute__((always_inline))
-#endif
-
-#define DUK_EXTERNAL_DECL  __attribute__ ((visibility("default"))) extern
-#define DUK_EXTERNAL       __attribute__ ((visibility("default")))
-#if defined(DUK_SINGLE_FILE)
-#if (defined(DUK_F_GCC_VERSION) && DUK_F_GCC_VERSION >= 30101) || defined(DUK_F_CLANG)
-/* Minimize warnings for unused internal functions with GCC >= 3.1.1 and
- * Clang.  Based on documentation it should suffice to have the attribute
- * in the declaration only, but in practice some warnings are generated unless
- * the attribute is also applied to the definition.
- */
-#define DUK_INTERNAL_DECL  static __attribute__ ((unused))
-#define DUK_INTERNAL       static __attribute__ ((unused))
-#else
-#define DUK_INTERNAL_DECL  static
-#define DUK_INTERNAL       static
-#endif
-#else
-#if (defined(DUK_F_GCC_VERSION) && DUK_F_GCC_VERSION >= 30101) || defined(DUK_F_CLANG)
-#define DUK_INTERNAL_DECL  __attribute__ ((visibility("hidden"))) __attribute__ ((unused)) extern
-#define DUK_INTERNAL       __attribute__ ((visibility("hidden"))) __attribute__ ((unused))
-#else
-#define DUK_INTERNAL_DECL  __attribute__ ((visibility("hidden"))) extern
-#define DUK_INTERNAL       __attribute__ ((visibility("hidden")))
-#endif
-#endif
-#define DUK_LOCAL_DECL     static
-#define DUK_LOCAL          static
-
-#define DUK_USE_COMPILER_STRING "emscripten"
-
-#undef DUK_USE_VARIADIC_MACROS
-#if defined(DUK_F_C99) || defined(DUK_F_CPP11)
-#define DUK_USE_VARIADIC_MACROS
-#endif
-
-#define DUK_USE_UNION_INITIALIZERS
-
-#undef DUK_USE_FLEX_C99
-#undef DUK_USE_FLEX_ZEROSIZE
-#undef DUK_USE_FLEX_ONESIZE
-#if defined(DUK_F_C99)
-#define DUK_USE_FLEX_C99
-#else
-#define DUK_USE_FLEX_ZEROSIZE
-#endif
-
-#undef DUK_USE_GCC_PRAGMAS
-#define DUK_USE_PACK_CLANG_ATTR
-#elif defined(DUK_F_TINYC)
-/* --- TinyC --- */
-#undef DUK_USE_BRANCH_HINTS
-
-#if defined(DUK_F_CPP)
-#define DUK_USE_COMPILER_STRING "tinyc++"
-#else
-#define DUK_USE_COMPILER_STRING "tinyc"
-#endif
-
-/* http://bellard.org/tcc/tcc-doc.html#SEC7 */
-#define DUK_USE_VARIADIC_MACROS
-
-#define DUK_USE_UNION_INITIALIZERS
-
-/* Most portable, wastes space */
-#define DUK_USE_FLEX_ONESIZE
-
-/* Most portable, potentially wastes space */
-#define DUK_USE_PACK_DUMMY_MEMBER
-#elif defined(DUK_F_VBCC)
-/* --- VBCC --- */
-#undef DUK_USE_BRANCH_HINTS
-
-#if defined(DUK_F_CPP)
-#define DUK_USE_COMPILER_STRING "vbcc-c++"
-#else
-#define DUK_USE_COMPILER_STRING "vbcc"
-#endif
-
-#undef DUK_USE_VARIADIC_MACROS
-#if defined(DUK_F_C99) || defined(DUK_F_CPP11)
-#define DUK_USE_VARIADIC_MACROS
-#endif
-
-/* VBCC supports C99 so check only for C99 for union initializer support.
- * Designated union initializers would possibly work even without a C99 check.
- */
-#undef DUK_USE_UNION_INITIALIZERS
-#if defined(DUK_F_C99)
-#define DUK_USE_UNION_INITIALIZERS
-#endif
-
-#define DUK_USE_FLEX_ZEROSIZE
-#define DUK_USE_PACK_DUMMY_MEMBER
-#elif defined(DUK_F_BCC)
-/* --- Bruce's C compiler --- */
-#undef DUK_USE_BRANCH_HINTS
-
-#if defined(DUK_F_CPP)
-#define DUK_USE_COMPILER_STRING "bcc++"
-#else
-#define DUK_USE_COMPILER_STRING "bcc"
-#endif
-
-/* Most portable */
-#undef DUK_USE_VARIADIC_MACROS
-
-/* Most portable, wastes space */
-#undef DUK_USE_UNION_INITIALIZERS
-
-/* Most portable, wastes space */
-#define DUK_USE_FLEX_ONESIZE
-
-/* Most portable, potentially wastes space */
-#define DUK_USE_PACK_DUMMY_MEMBER
-
-/* BCC, assume we're on x86. */
-#if !defined(DUK_USE_BYTEORDER)
-#define DUK_USE_BYTEORDER 1
-#endif
-#else
-/* --- Generic --- */
-#undef DUK_USE_BRANCH_HINTS
-
-#if defined(DUK_F_CPP)
-#define DUK_USE_COMPILER_STRING "generic-c++"
-#else
-#define DUK_USE_COMPILER_STRING "generic"
-#endif
-
-#undef DUK_USE_VARIADIC_MACROS
-#if defined(DUK_F_C99) || defined(DUK_F_CPP11)
-#define DUK_USE_VARIADIC_MACROS
-#endif
-
-/* C++ doesn't have standard designated union initializers ({ .foo = 1 }). */
-#undef DUK_USE_UNION_INITIALIZERS
-#if defined(DUK_F_C99)
-#define DUK_USE_UNION_INITIALIZERS
-#endif
-
-/* Most portable, wastes space */
-#define DUK_USE_FLEX_ONESIZE
-
-/* Most portable, potentially wastes space */
-#define DUK_USE_PACK_DUMMY_MEMBER
-#endif  /* autodetect compiler */
 
 /* uclibc */
 #if defined(__UCLIBC__)
@@ -1592,9 +490,7 @@
 /* Basic integer typedefs and limits, preferably from inttypes.h, otherwise
  * through automatic detection.
  */
-#if defined(DUK_F_HAVE_INTTYPES)
-/* C99 or compatible */
-
+/* C99 types assumed */
 #define DUK_F_HAVE_64BIT
 #include <inttypes.h>
 
@@ -1689,253 +585,6 @@ typedef intmax_t duk_intmax_t;
 #define DUK_SIZE_MIN          0
 #define DUK_SIZE_MAX          SIZE_MAX
 #undef DUK_SIZE_MAX_COMPUTED
-
-#else  /* C99 types */
-
-/* When C99 types are not available, we use heuristic detection to get
- * the basic 8, 16, 32, and (possibly) 64 bit types.  The fast/least
- * types are then assumed to be exactly the same for now: these could
- * be improved per platform but C99 types are very often now available.
- * 64-bit types are not available on all platforms; this is OK at least
- * on 32-bit platforms.
- *
- * This detection code is necessarily a bit hacky and can provide typedefs
- * and defines that won't work correctly on some exotic platform.
- */
-
-#if (defined(CHAR_BIT) && (CHAR_BIT == 8)) || \
-    (defined(UCHAR_MAX) && (UCHAR_MAX == 255))
-typedef unsigned char duk_uint8_t;
-typedef signed char duk_int8_t;
-#else
-#error cannot detect 8-bit type
-#endif
-
-#if defined(USHRT_MAX) && (USHRT_MAX == 65535UL)
-typedef unsigned short duk_uint16_t;
-typedef signed short duk_int16_t;
-#elif defined(UINT_MAX) && (UINT_MAX == 65535UL)
-/* On some platforms int is 16-bit but long is 32-bit (e.g. PureC) */
-typedef unsigned int duk_uint16_t;
-typedef signed int duk_int16_t;
-#else
-#error cannot detect 16-bit type
-#endif
-
-#if defined(UINT_MAX) && (UINT_MAX == 4294967295UL)
-typedef unsigned int duk_uint32_t;
-typedef signed int duk_int32_t;
-#elif defined(ULONG_MAX) && (ULONG_MAX == 4294967295UL)
-/* On some platforms int is 16-bit but long is 32-bit (e.g. PureC) */
-typedef unsigned long duk_uint32_t;
-typedef signed long duk_int32_t;
-#else
-#error cannot detect 32-bit type
-#endif
-
-/* 64-bit type detection is a bit tricky.
- *
- * ULLONG_MAX is a standard define.  __LONG_LONG_MAX__ and __ULONG_LONG_MAX__
- * are used by at least GCC (even if system headers don't provide ULLONG_MAX).
- * Some GCC variants may provide __LONG_LONG_MAX__ but not __ULONG_LONG_MAX__.
- *
- * ULL / LL constants are rejected / warned about by some compilers, even if
- * the compiler has a 64-bit type and the compiler/system headers provide an
- * unsupported constant (ULL/LL)!  Try to avoid using ULL / LL constants.
- * As a side effect we can only check that e.g. ULONG_MAX is larger than 32
- * bits but can't be sure it is exactly 64 bits.  Self tests will catch such
- * cases.
- */
-#undef DUK_F_HAVE_64BIT
-#if !defined(DUK_F_HAVE_64BIT) && defined(ULONG_MAX)
-#if (ULONG_MAX > 4294967295UL)
-#define DUK_F_HAVE_64BIT
-typedef unsigned long duk_uint64_t;
-typedef signed long duk_int64_t;
-#endif
-#endif
-#if !defined(DUK_F_HAVE_64BIT) && defined(ULLONG_MAX)
-#if (ULLONG_MAX > 4294967295UL)
-#define DUK_F_HAVE_64BIT
-typedef unsigned long long duk_uint64_t;
-typedef signed long long duk_int64_t;
-#endif
-#endif
-#if !defined(DUK_F_HAVE_64BIT) && defined(__ULONG_LONG_MAX__)
-#if (__ULONG_LONG_MAX__ > 4294967295UL)
-#define DUK_F_HAVE_64BIT
-typedef unsigned long long duk_uint64_t;
-typedef signed long long duk_int64_t;
-#endif
-#endif
-#if !defined(DUK_F_HAVE_64BIT) && defined(__LONG_LONG_MAX__)
-#if (__LONG_LONG_MAX__ > 2147483647L)
-#define DUK_F_HAVE_64BIT
-typedef unsigned long long duk_uint64_t;
-typedef signed long long duk_int64_t;
-#endif
-#endif
-#if !defined(DUK_F_HAVE_64BIT) && defined(DUK_F_MINGW)
-#define DUK_F_HAVE_64BIT
-typedef unsigned long duk_uint64_t;
-typedef signed long duk_int64_t;
-#endif
-#if !defined(DUK_F_HAVE_64BIT) && defined(DUK_F_MSVC)
-#define DUK_F_HAVE_64BIT
-typedef unsigned __int64 duk_uint64_t;
-typedef signed __int64 duk_int64_t;
-#endif
-#if !defined(DUK_F_HAVE_64BIT)
-/* cannot detect 64-bit type, not always needed so don't error */
-#endif
-
-typedef duk_uint8_t duk_uint_least8_t;
-typedef duk_int8_t duk_int_least8_t;
-typedef duk_uint16_t duk_uint_least16_t;
-typedef duk_int16_t duk_int_least16_t;
-typedef duk_uint32_t duk_uint_least32_t;
-typedef duk_int32_t duk_int_least32_t;
-typedef duk_uint8_t duk_uint_fast8_t;
-typedef duk_int8_t duk_int_fast8_t;
-typedef duk_uint16_t duk_uint_fast16_t;
-typedef duk_int16_t duk_int_fast16_t;
-typedef duk_uint32_t duk_uint_fast32_t;
-typedef duk_int32_t duk_int_fast32_t;
-#if defined(DUK_F_HAVE_64BIT)
-typedef duk_uint64_t duk_uint_least64_t;
-typedef duk_int64_t duk_int_least64_t;
-typedef duk_uint64_t duk_uint_fast64_t;
-typedef duk_int64_t duk_int_fast64_t;
-#endif
-#if defined(DUK_F_HAVE_64BIT)
-typedef duk_uint64_t duk_uintmax_t;
-typedef duk_int64_t duk_intmax_t;
-#else
-typedef duk_uint32_t duk_uintmax_t;
-typedef duk_int32_t duk_intmax_t;
-#endif
-
-/* Note: the funny looking computations for signed minimum 16-bit, 32-bit, and
- * 64-bit values are intentional as the obvious forms (e.g. -0x80000000L) are
- * -not- portable.  See code-issues.txt for a detailed discussion.
- */
-#define DUK_UINT8_MIN         0UL
-#define DUK_UINT8_MAX         0xffUL
-#define DUK_INT8_MIN          (-0x80L)
-#define DUK_INT8_MAX          0x7fL
-#define DUK_UINT_LEAST8_MIN   0UL
-#define DUK_UINT_LEAST8_MAX   0xffUL
-#define DUK_INT_LEAST8_MIN    (-0x80L)
-#define DUK_INT_LEAST8_MAX    0x7fL
-#define DUK_UINT_FAST8_MIN    0UL
-#define DUK_UINT_FAST8_MAX    0xffUL
-#define DUK_INT_FAST8_MIN     (-0x80L)
-#define DUK_INT_FAST8_MAX     0x7fL
-#define DUK_UINT16_MIN        0UL
-#define DUK_UINT16_MAX        0xffffUL
-#define DUK_INT16_MIN         (-0x7fffL - 1L)
-#define DUK_INT16_MAX         0x7fffL
-#define DUK_UINT_LEAST16_MIN  0UL
-#define DUK_UINT_LEAST16_MAX  0xffffUL
-#define DUK_INT_LEAST16_MIN   (-0x7fffL - 1L)
-#define DUK_INT_LEAST16_MAX   0x7fffL
-#define DUK_UINT_FAST16_MIN   0UL
-#define DUK_UINT_FAST16_MAX   0xffffUL
-#define DUK_INT_FAST16_MIN    (-0x7fffL - 1L)
-#define DUK_INT_FAST16_MAX    0x7fffL
-#define DUK_UINT32_MIN        0UL
-#define DUK_UINT32_MAX        0xffffffffUL
-#define DUK_INT32_MIN         (-0x7fffffffL - 1L)
-#define DUK_INT32_MAX         0x7fffffffL
-#define DUK_UINT_LEAST32_MIN  0UL
-#define DUK_UINT_LEAST32_MAX  0xffffffffUL
-#define DUK_INT_LEAST32_MIN   (-0x7fffffffL - 1L)
-#define DUK_INT_LEAST32_MAX   0x7fffffffL
-#define DUK_UINT_FAST32_MIN   0UL
-#define DUK_UINT_FAST32_MAX   0xffffffffUL
-#define DUK_INT_FAST32_MIN    (-0x7fffffffL - 1L)
-#define DUK_INT_FAST32_MAX    0x7fffffffL
-
-/* 64-bit constants.  Since LL / ULL constants are not always available,
- * use computed values.  These values can't be used in preprocessor
- * comparisons; flag them as such.
- */
-#if defined(DUK_F_HAVE_64BIT)
-#define DUK_UINT64_MIN        ((duk_uint64_t) 0)
-#define DUK_UINT64_MAX        ((duk_uint64_t) -1)
-#define DUK_INT64_MIN         ((duk_int64_t) (~(DUK_UINT64_MAX >> 1)))
-#define DUK_INT64_MAX         ((duk_int64_t) (DUK_UINT64_MAX >> 1))
-#define DUK_UINT_LEAST64_MIN  DUK_UINT64_MIN
-#define DUK_UINT_LEAST64_MAX  DUK_UINT64_MAX
-#define DUK_INT_LEAST64_MIN   DUK_INT64_MIN
-#define DUK_INT_LEAST64_MAX   DUK_INT64_MAX
-#define DUK_UINT_FAST64_MIN   DUK_UINT64_MIN
-#define DUK_UINT_FAST64_MAX   DUK_UINT64_MAX
-#define DUK_INT_FAST64_MIN    DUK_INT64_MIN
-#define DUK_INT_FAST64_MAX    DUK_INT64_MAX
-#define DUK_UINT64_MIN_COMPUTED
-#define DUK_UINT64_MAX_COMPUTED
-#define DUK_INT64_MIN_COMPUTED
-#define DUK_INT64_MAX_COMPUTED
-#define DUK_UINT_LEAST64_MIN_COMPUTED
-#define DUK_UINT_LEAST64_MAX_COMPUTED
-#define DUK_INT_LEAST64_MIN_COMPUTED
-#define DUK_INT_LEAST64_MAX_COMPUTED
-#define DUK_UINT_FAST64_MIN_COMPUTED
-#define DUK_UINT_FAST64_MAX_COMPUTED
-#define DUK_INT_FAST64_MIN_COMPUTED
-#define DUK_INT_FAST64_MAX_COMPUTED
-#endif
-
-#if defined(DUK_F_HAVE_64BIT)
-#define DUK_UINTMAX_MIN       DUK_UINT64_MIN
-#define DUK_UINTMAX_MAX       DUK_UINT64_MAX
-#define DUK_INTMAX_MIN        DUK_INT64_MIN
-#define DUK_INTMAX_MAX        DUK_INT64_MAX
-#define DUK_UINTMAX_MIN_COMPUTED
-#define DUK_UINTMAX_MAX_COMPUTED
-#define DUK_INTMAX_MIN_COMPUTED
-#define DUK_INTMAX_MAX_COMPUTED
-#else
-#define DUK_UINTMAX_MIN       0UL
-#define DUK_UINTMAX_MAX       0xffffffffUL
-#define DUK_INTMAX_MIN        (-0x7fffffffL - 1L)
-#define DUK_INTMAX_MAX        0x7fffffffL
-#endif
-
-/* This detection is not very reliable. */
-#if defined(DUK_F_32BIT_PTRS)
-typedef duk_int32_t duk_intptr_t;
-typedef duk_uint32_t duk_uintptr_t;
-#define DUK_UINTPTR_MIN       DUK_UINT32_MIN
-#define DUK_UINTPTR_MAX       DUK_UINT32_MAX
-#define DUK_INTPTR_MIN        DUK_INT32_MIN
-#define DUK_INTPTR_MAX        DUK_INT32_MAX
-#elif defined(DUK_F_64BIT_PTRS) && defined(DUK_F_HAVE_64BIT)
-typedef duk_int64_t duk_intptr_t;
-typedef duk_uint64_t duk_uintptr_t;
-#define DUK_UINTPTR_MIN       DUK_UINT64_MIN
-#define DUK_UINTPTR_MAX       DUK_UINT64_MAX
-#define DUK_INTPTR_MIN        DUK_INT64_MIN
-#define DUK_INTPTR_MAX        DUK_INT64_MAX
-#define DUK_UINTPTR_MIN_COMPUTED
-#define DUK_UINTPTR_MAX_COMPUTED
-#define DUK_INTPTR_MIN_COMPUTED
-#define DUK_INTPTR_MAX_COMPUTED
-#else
-#error cannot determine intptr type
-#endif
-
-/* SIZE_MAX may be missing so use an approximate value for it. */
-#undef DUK_SIZE_MAX_COMPUTED
-#if !defined(SIZE_MAX)
-#define DUK_SIZE_MAX_COMPUTED
-#define SIZE_MAX              ((size_t) (-1))
-#endif
-#define DUK_SIZE_MIN          0
-#define DUK_SIZE_MAX          SIZE_MAX
-
-#endif  /* C99 types */
 
 /* A few types are assumed to always exist. */
 typedef size_t duk_size_t;
@@ -2090,6 +739,10 @@ typedef struct duk_hthread duk_context;
 #if !defined(DUK_ABORT)
 #define DUK_ABORT             abort
 #endif
+
+#define DUK_SETJMP(jb) 0
+#define DUK_LONGJMP(jb) abort()
+#define DUK_JMPBUF_TYPE       void*
 
 #if !defined(DUK_SETJMP)
 #define DUK_JMPBUF_TYPE       jmp_buf
@@ -2415,116 +1068,6 @@ typedef struct duk_hthread duk_context;
 #endif
 
 /*
- *  Byte order and double memory layout detection
- *
- *  Endianness detection is a major portability hassle because the macros
- *  and headers are not standardized.  There's even variance across UNIX
- *  platforms.  Even with "standard" headers, details like underscore count
- *  varies between platforms, e.g. both __BYTE_ORDER and _BYTE_ORDER are used
- *  (Crossbridge has a single underscore, for instance).
- *
- *  The checks below are structured with this in mind: several approaches are
- *  used, and at the end we check if any of them worked.  This allows generic
- *  approaches to be tried first, and platform/compiler specific hacks tried
- *  last.  As a last resort, the user can force a specific endianness, as it's
- *  not likely that automatic detection will work on the most exotic platforms.
- *
- *  Duktape supports little and big endian machines.  There's also support
- *  for a hybrid used by some ARM machines where integers are little endian
- *  but IEEE double values use a mixed order (12345678 -> 43218765).  This
- *  byte order for doubles is referred to as "mixed endian".
- */
-
-/* GCC and Clang provide endianness defines as built-in predefines, with
- * leading and trailing double underscores (e.g. __BYTE_ORDER__).  See
- * output of "make gccpredefs" and "make clangpredefs".  Clang doesn't
- * seem to provide __FLOAT_WORD_ORDER__; assume not mixed endian for clang.
- * http://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html
- */
-#if !defined(DUK_USE_BYTEORDER) && defined(__BYTE_ORDER__)
-#if defined(__ORDER_LITTLE_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-#if defined(__FLOAT_WORD_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__) && (__FLOAT_WORD_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-#define DUK_USE_BYTEORDER 1
-#elif defined(__FLOAT_WORD_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__FLOAT_WORD_ORDER__ == __ORDER_BIG_ENDIAN__)
-#define DUK_USE_BYTEORDER 2
-#elif !defined(__FLOAT_WORD_ORDER__)
-/* Float word order not known, assume not a hybrid. */
-#define DUK_USE_BYTEORDER 1
-#else
-/* Byte order is little endian but cannot determine IEEE double word order. */
-#endif  /* float word order */
-#elif defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-#if defined(__FLOAT_WORD_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__FLOAT_WORD_ORDER__ == __ORDER_BIG_ENDIAN__)
-#define DUK_USE_BYTEORDER 3
-#elif !defined(__FLOAT_WORD_ORDER__)
-/* Float word order not known, assume not a hybrid. */
-#define DUK_USE_BYTEORDER 3
-#else
-/* Byte order is big endian but cannot determine IEEE double word order. */
-#endif  /* float word order */
-#else
-/* Cannot determine byte order; __ORDER_PDP_ENDIAN__ is related to 32-bit
- * integer ordering and is not relevant.
- */
-#endif  /* integer byte order */
-#endif  /* !defined(DUK_USE_BYTEORDER) && defined(__BYTE_ORDER__) */
-
-/* More or less standard endianness predefines provided by header files.
- * The ARM hybrid case is detected by assuming that __FLOAT_WORD_ORDER
- * will be big endian, see: http://lists.mysql.com/internals/443.
- * On some platforms some defines may be present with an empty value which
- * causes comparisons to fail: https://github.com/svaarala/duktape/issues/453.
- */
-#if !defined(DUK_USE_BYTEORDER)
-#if defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN) && (__BYTE_ORDER == __LITTLE_ENDIAN) || \
-    defined(_BYTE_ORDER) && defined(_LITTLE_ENDIAN) && (_BYTE_ORDER == _LITTLE_ENDIAN) || \
-    defined(__LITTLE_ENDIAN__)
-#if defined(__FLOAT_WORD_ORDER) && defined(__LITTLE_ENDIAN) && (__FLOAT_WORD_ORDER == __LITTLE_ENDIAN) || \
-    defined(_FLOAT_WORD_ORDER) && defined(_LITTLE_ENDIAN) && (_FLOAT_WORD_ORDER == _LITTLE_ENDIAN)
-#define DUK_USE_BYTEORDER 1
-#elif defined(__FLOAT_WORD_ORDER) && defined(__BIG_ENDIAN) && (__FLOAT_WORD_ORDER == __BIG_ENDIAN) || \
-      defined(_FLOAT_WORD_ORDER) && defined(_BIG_ENDIAN) && (_FLOAT_WORD_ORDER == _BIG_ENDIAN)
-#define DUK_USE_BYTEORDER 2
-#elif !defined(__FLOAT_WORD_ORDER) && !defined(_FLOAT_WORD_ORDER)
-/* Float word order not known, assume not a hybrid. */
-#define DUK_USE_BYTEORDER 1
-#else
-/* Byte order is little endian but cannot determine IEEE double word order. */
-#endif  /* float word order */
-#elif defined(__BYTE_ORDER) && defined(__BIG_ENDIAN) && (__BYTE_ORDER == __BIG_ENDIAN) || \
-      defined(_BYTE_ORDER) && defined(_BIG_ENDIAN) && (_BYTE_ORDER == _BIG_ENDIAN) || \
-      defined(__BIG_ENDIAN__)
-#if defined(__FLOAT_WORD_ORDER) && defined(__BIG_ENDIAN) && (__FLOAT_WORD_ORDER == __BIG_ENDIAN) || \
-    defined(_FLOAT_WORD_ORDER) && defined(_BIG_ENDIAN) && (_FLOAT_WORD_ORDER == _BIG_ENDIAN)
-#define DUK_USE_BYTEORDER 3
-#elif !defined(__FLOAT_WORD_ORDER) && !defined(_FLOAT_WORD_ORDER)
-/* Float word order not known, assume not a hybrid. */
-#define DUK_USE_BYTEORDER 3
-#else
-/* Byte order is big endian but cannot determine IEEE double word order. */
-#endif  /* float word order */
-#else
-/* Cannot determine byte order. */
-#endif  /* integer byte order */
-#endif  /* !defined(DUK_USE_BYTEORDER) */
-
-/* QNX gcc cross compiler seems to define e.g. __LITTLEENDIAN__ or __BIGENDIAN__:
- *  $ /opt/qnx650/host/linux/x86/usr/bin/i486-pc-nto-qnx6.5.0-gcc -dM -E - </dev/null | grep -ni endian
- *  67:#define __LITTLEENDIAN__ 1
- *  $ /opt/qnx650/host/linux/x86/usr/bin/mips-unknown-nto-qnx6.5.0-gcc -dM -E - </dev/null | grep -ni endian
- *  81:#define __BIGENDIAN__ 1
- *  $ /opt/qnx650/host/linux/x86/usr/bin/arm-unknown-nto-qnx6.5.0-gcc -dM -E - </dev/null | grep -ni endian
- *  70:#define __LITTLEENDIAN__ 1
- */
-#if !defined(DUK_USE_BYTEORDER)
-#if defined(__LITTLEENDIAN__)
-#define DUK_USE_BYTEORDER 1
-#elif defined(__BIGENDIAN__)
-#define DUK_USE_BYTEORDER 3
-#endif
-#endif
-
-/*
  *  Alignment requirement and support for unaligned accesses
  *
  *  Assume unaligned accesses are not supported unless specifically allowed
@@ -2753,46 +1296,6 @@ typedef struct duk_hthread duk_context;
 #define DUK_ALWAYS_INLINE  /*nop*/
 #endif
 
-/*
- *  Check whether or not a packed duk_tval representation is possible.
- *  What's basically required is that pointers are 32-bit values
- *  (sizeof(void *) == 4).  Best effort check, not always accurate.
- *  If guess goes wrong, crashes may result; self tests also verify
- *  the guess.
- */
-
-/* Explicit marker needed; may be 'defined', 'undefined, 'or 'not provided'. */
-#if !defined(DUK_F_PACKED_TVAL_PROVIDED)
-#undef DUK_F_PACKED_TVAL_POSSIBLE
-
-/* Strict C99 case: DUK_UINTPTR_MAX (= UINTPTR_MAX) should be very reliable */
-#if !defined(DUK_F_PACKED_TVAL_POSSIBLE) && defined(DUK_UINTPTR_MAX)
-#if (DUK_UINTPTR_MAX <= 0xffffffffUL)
-#define DUK_F_PACKED_TVAL_POSSIBLE
-#endif
-#endif
-
-/* Non-C99 case, still relying on DUK_UINTPTR_MAX, as long as it is not a computed value */
-#if !defined(DUK_F_PACKED_TVAL_POSSIBLE) && defined(DUK_UINTPTR_MAX) && !defined(DUK_UINTPTR_MAX_COMPUTED)
-#if (DUK_UINTPTR_MAX <= 0xffffffffUL)
-#define DUK_F_PACKED_TVAL_POSSIBLE
-#endif
-#endif
-
-/* DUK_SIZE_MAX (= SIZE_MAX) is often reliable */
-#if !defined(DUK_F_PACKED_TVAL_POSSIBLE) && defined(DUK_SIZE_MAX) && !defined(DUK_SIZE_MAX_COMPUTED)
-#if (DUK_SIZE_MAX <= 0xffffffffUL)
-#define DUK_F_PACKED_TVAL_POSSIBLE
-#endif
-#endif
-
-#undef DUK_USE_PACKED_TVAL
-#if defined(DUK_F_PACKED_TVAL_POSSIBLE)
-#define DUK_USE_PACKED_TVAL
-#endif
-#undef DUK_F_PACKED_TVAL_POSSIBLE
-
-#endif  /* DUK_F_PACKED_TVAL_PROVIDED */
 /* Object property allocation layout has implications for memory and code
  * footprint and generated code size/speed.  The best layout also depends
  * on whether the platform has alignment requirements or benefits from
@@ -2831,7 +1334,6 @@ typedef struct duk_hthread duk_context;
 #define DUK_USE_FASTINT
 #define DUK_USE_FATAL_HANDLER(udata,msg) do { const char *fatal_msg = (msg); fprintf(stderr, "*** FATAL ERROR: %s\n", fatal_msg ? fatal_msg : "no message"); fflush(stderr); *((volatile unsigned int *) 0) = (unsigned int) 0xdeadbeefUL; abort(); } while(0)
 #undef DUK_USE_FILE_IO
-#undef DUK_USE_GET_MONOTONIC_TIME_CLOCK_GETTIME
 #define DUK_USE_GET_MONOTONIC_TIME_CLOCK_GETTIME
 #define DUK_USE_GLOBAL_BINDING
 #define DUK_USE_JSON_STRINGIFY_FASTPATH
@@ -2868,8 +1370,15 @@ typedef struct duk_hthread duk_context;
 #undef DUK_USE_DATE_FORMAT_STRING
 #undef DUK_USE_DATE_GET_LOCAL_TZOFFSET
 #undef DUK_USE_DATE_GET_NOW
+#undef DUK_USE_DATE_NOW_TIME
+#undef DUK_USE_DATE_NOW_WINDOWS
+#undef DUK_USE_DATE_NOW_WINDOWS_SUBMS
 #undef DUK_USE_DATE_PARSE_STRING
 #undef DUK_USE_DATE_PRS_GETDATE
+#undef DUK_USE_DATE_TZO_GMTIME
+#undef DUK_USE_DATE_TZO_GMTIME_S
+#undef DUK_USE_DATE_TZO_WINDOWS
+#undef DUK_USE_DATE_TZO_WINDOWS_NO_DST
 #undef DUK_USE_DEBUG
 #undef DUK_USE_DEBUGGER_DUMPHEAP
 #undef DUK_USE_DEBUGGER_INSPECT
@@ -2918,6 +1427,7 @@ typedef struct duk_hthread duk_context;
 #define DUK_USE_FUNC_NAME_PROPERTY
 #undef DUK_USE_GC_TORTURE
 #undef DUK_USE_GET_MONOTONIC_TIME
+#undef DUK_USE_GET_MONOTONIC_TIME_WINDOWS_QPC
 #undef DUK_USE_GET_RANDOM_DOUBLE
 #define DUK_USE_GLOBAL_BUILTIN
 #undef DUK_USE_HEAPPTR16
@@ -2969,6 +1479,8 @@ typedef struct duk_hthread duk_context;
 #define DUK_USE_NUMBER_BUILTIN
 #define DUK_USE_OBJECT_BUILTIN
 #undef DUK_USE_OBJSIZES16
+#undef DUK_USE_PACK_GCC_ATTR
+#undef DUK_USE_PACK_MSVC_PRAGMA
 #undef DUK_USE_PARANOID_ERRORS
 #define DUK_USE_PC2LINE
 #define DUK_USE_PERFORMANCE_BUILTIN

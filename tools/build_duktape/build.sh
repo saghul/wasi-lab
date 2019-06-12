@@ -8,5 +8,9 @@ rm -f out/*
 pushd duktape
 python2 tools/configure.py \
     --output-directory ../out \
-    --option-file ../config.yaml
+    --option-file ../config.yaml \
+    --c99-types-only \
+    --platform posix \
+    --compiler clang \
+    --architecture x86
 popd
