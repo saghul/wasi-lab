@@ -5,6 +5,7 @@ DUK_USE_FATAL_HANDLER:
   verbatim: "#define DUK_USE_FATAL_HANDLER(udata,msg) do { const char *fatal_msg = (msg); fprintf(stderr, \"*** FATAL ERROR: %s\\n\", fatal_msg ? fatal_msg : \"no message\"); fflush(stderr); *((volatile unsigned int *) 0) = (unsigned int) 0xdeadbeefUL; abort(); } while(0)"
 DUK_USE_BYTECODE_DUMP_SUPPORT: false
 DUK_USE_COMMONJS_MODULES: false
+DUK_USE_COROUTINE_SUPPORT: false
 DUK_USE_FILE_IO: false
 DUK_USE_UNION_INITIALIZERS: true
 DUK_USE_GET_MONOTONIC_TIME_CLOCK_GETTIME: true

@@ -1331,6 +1331,7 @@ typedef struct duk_hthread duk_context;
 
 #undef DUK_USE_BYTECODE_DUMP_SUPPORT
 #undef DUK_USE_COMMONJS_MODULES
+#undef DUK_USE_COROUTINE_SUPPORT
 #define DUK_USE_FASTINT
 #define DUK_USE_FATAL_HANDLER(udata,msg) do { const char *fatal_msg = (msg); fprintf(stderr, "*** FATAL ERROR: %s\n", fatal_msg ? fatal_msg : "no message"); fflush(stderr); *((volatile unsigned int *) 0) = (unsigned int) 0xdeadbeefUL; abort(); } while(0)
 #undef DUK_USE_FILE_IO
@@ -1361,7 +1362,6 @@ typedef struct duk_hthread duk_context;
 #define DUK_USE_CACHE_CATCHER
 #define DUK_USE_CALLSTACK_LIMIT 10000
 #define DUK_USE_COMPILER_RECLIMIT 2500
-#define DUK_USE_COROUTINE_SUPPORT
 #undef DUK_USE_CPP_EXCEPTIONS
 #undef DUK_USE_DATAPTR16
 #undef DUK_USE_DATAPTR_DEC16
