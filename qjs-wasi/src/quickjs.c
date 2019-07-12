@@ -31,6 +31,16 @@
 #include <sys/time.h>
 #include <time.h>
 #include <fenv.h>
+/* WASI SDK does not define these yet. */
+#if !defined(FE_DOWNWARD)
+#define FE_DOWNWARD   0x400
+#endif
+#if !defined(FE_UPWARD)
+#define FE_UPWARD     0x800
+#endif
+#if !defined(FE_TOWARDZERO)
+#define FE_TOWARDZERO 0xc00
+#endif
 #include <math.h>
 #if defined(__APPLE__)
 #include <malloc/malloc.h>
@@ -48,7 +58,7 @@
 
 #define OPTIMIZE         1
 #define SHORT_OPCODES    1
-#if defined(EMSCRIPTEN)
+#if defined(EMSCRIPTEN) || defined(__wasi__)
 #define DIRECT_DISPATCH  0
 #else
 #define DIRECT_DISPATCH  1
@@ -67,7 +77,7 @@
 
 /* define to include Atomics.* operations which depend on the OS
    threads */
-#if !defined(EMSCRIPTEN)
+#if !(defined(EMSCRIPTEN) || defined(__wasi__))
 #define CONFIG_ATOMICS
 #endif
 #define JSON_SUPERSET  1
@@ -1273,7 +1283,7 @@ static inline size_t js_def_malloc_usable_size(void *ptr)
     return malloc_size(ptr);
 #elif defined(_WIN32)
     return _msize(ptr);
-#elif defined(EMSCRIPTEN)
+#elif defined(EMSCRIPTEN) || defined(__wasi__)
     return 0;
 #elif defined(__linux__)
     return malloc_usable_size(ptr);
@@ -1347,7 +1357,7 @@ static const JSMallocFunctions def_malloc_funcs = {
     malloc_size,
 #elif defined(_WIN32)
     (size_t (*)(const void *))_msize,
-#elif defined(EMSCRIPTEN)
+#elif defined(EMSCRIPTEN) || defined(__wasi__)
     NULL,
 #elif defined(__linux__)
     (size_t (*)(const void *))malloc_usable_size,
@@ -1696,7 +1706,7 @@ void JS_FreeRuntime(JSRuntime *rt)
     }
 }
 
-#if defined(EMSCRIPTEN)
+#if defined(EMSCRIPTEN) || defined(__wasi__)
 /* currently no stack limitation */
 static inline uint8_t *js_get_stack_pointer(void)
 {

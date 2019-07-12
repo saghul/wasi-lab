@@ -38,9 +38,11 @@
 #include <windows.h>
 #include <conio.h>
 #else
+#if !defined(__wasi__)
 #include <dlfcn.h>
 #include <termios.h>
 #include <sys/ioctl.h>
+#endif
 #if defined(__APPLE__)
 typedef sig_t sighandler_t;
 #endif
@@ -346,7 +348,7 @@ typedef JSModuleDef *(JSInitModuleFunc)(JSContext *ctx,
                                         const char *module_name);
 
 
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__wasi__)
 static JSModuleDef *js_module_loader_so(JSContext *ctx,
                                         const char *module_name)
 {
@@ -604,6 +606,7 @@ static JSValue js_std_open(JSContext *ctx, JSValueConst this_val,
     return JS_EXCEPTION;
 }
 
+#if !defined(__wasi__)
 static JSValue js_std_tmpfile(JSContext *ctx, JSValueConst this_val,
                               int argc, JSValueConst *argv)
 {
@@ -613,6 +616,7 @@ static JSValue js_std_tmpfile(JSContext *ctx, JSValueConst this_val,
         return js_std_throw_errno(ctx, errno);
     return js_new_std_file(ctx, f, TRUE);
 }
+#endif
 
 static JSValue js_std_sprintf(JSContext *ctx, JSValueConst this_val,
                           int argc, JSValueConst *argv)
@@ -891,7 +895,9 @@ static const JSCFunctionListEntry js_std_funcs[] = {
 
     /* FILE I/O */
     JS_CFUNC_DEF("open", 2, js_std_open ),
+#if !defined(__wasi__)
     JS_CFUNC_DEF("tmpfile", 0, js_std_tmpfile ),
+#endif
     JS_CFUNC_MAGIC_DEF("puts", 1, js_std_file_puts, 0 ),
     JS_CFUNC_DEF("printf", 1, js_std_printf ),
     JS_CFUNC_DEF("sprintf", 1, js_std_sprintf ),
@@ -1086,6 +1092,7 @@ static JSValue js_os_isatty(JSContext *ctx, JSValueConst this_val,
     return JS_NewBool(ctx, isatty(fd) == 1);
 }
 
+#if !defined(__wasi__)
 #if defined(_WIN32)
 static JSValue js_os_ttyGetWinSize(JSContext *ctx, JSValueConst this_val,
                                    int argc, JSValueConst *argv)
@@ -1182,6 +1189,7 @@ static JSValue js_os_ttySetRaw(JSContext *ctx, JSValueConst this_val,
 }
 
 #endif /* !_WIN32 */
+#endif
 
 static JSValue js_os_remove(JSContext *ctx, JSValueConst this_val,
                              int argc, JSValueConst *argv)
@@ -1279,6 +1287,14 @@ static JSValue js_os_setReadHandler(JSContext *ctx, JSValueConst this_val,
     return JS_UNDEFINED;
 }
 
+static void free_sh(JSRuntime *rt, JSOSSignalHandler *sh)
+{
+    list_del(&sh->link);
+    JS_FreeValueRT(rt, sh->func);
+    js_free_rt(rt, sh);
+}
+
+#if !defined(__wasi__)
 static JSOSSignalHandler *find_sh(int sig_num)
 {
     JSOSSignalHandler *sh;
@@ -1289,13 +1305,6 @@ static JSOSSignalHandler *find_sh(int sig_num)
             return sh;
     }
     return NULL;
-}
-
-static void free_sh(JSRuntime *rt, JSOSSignalHandler *sh)
-{
-    list_del(&sh->link);
-    JS_FreeValueRT(rt, sh->func);
-    js_free_rt(rt, sh);
 }
 
 static void os_signal_handler(int sig_num)
@@ -1348,6 +1357,7 @@ static JSValue js_os_signal(JSContext *ctx, JSValueConst this_val,
     }
     return JS_UNDEFINED;
 }
+#endif
 
 #if defined(__linux__) || defined(__APPLE__)
 static int64_t get_time_ms(void)
@@ -1648,12 +1658,15 @@ static const JSCFunctionListEntry js_os_funcs[] = {
     JS_CFUNC_MAGIC_DEF("read", 4, js_os_read_write, 0 ),
     JS_CFUNC_MAGIC_DEF("write", 4, js_os_read_write, 1 ),
     JS_CFUNC_DEF("isatty", 1, js_os_isatty ),
+#if !defined(__wasi__)
     JS_CFUNC_DEF("ttyGetWinSize", 1, js_os_ttyGetWinSize ),
     JS_CFUNC_DEF("ttySetRaw", 1, js_os_ttySetRaw ),
+#endif
     JS_CFUNC_DEF("remove", 1, js_os_remove ),
     JS_CFUNC_DEF("rename", 2, js_os_rename ),
     JS_CFUNC_MAGIC_DEF("setReadHandler", 2, js_os_setReadHandler, 0 ),
     JS_CFUNC_MAGIC_DEF("setWriteHandler", 2, js_os_setReadHandler, 1 ),
+#if !defined(__wasi__)
     JS_CFUNC_DEF("signal", 2, js_os_signal ),
     OS_FLAG(SIGINT),
     OS_FLAG(SIGABRT),
@@ -1661,6 +1674,7 @@ static const JSCFunctionListEntry js_os_funcs[] = {
     OS_FLAG(SIGILL),
     OS_FLAG(SIGSEGV),
     OS_FLAG(SIGTERM),
+#endif
     JS_CFUNC_DEF("setTimeout", 2, js_os_setTimeout ),
     JS_CFUNC_DEF("clearTimeout", 1, js_os_clearTimeout ),
     JS_PROP_STRING_DEF("platform", OS_PLATFORM, 0 ),
