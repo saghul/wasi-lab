@@ -15,3 +15,7 @@ Status: Runs! Crashes on uncaught excaptions (bug or feature?). Minimal repl.
 [QuickJS](https://bellard.org/quickjs/) JavaScript engine running on WASI.
 
 Status. Runs! No repl but files run.
+
+## License
+
+All embedded projects retain their respective changes. Changes made to them and the build files in this repository are licensed under the Apache 2 license.
