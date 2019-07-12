@@ -1,3 +1,4 @@
 build
 tools/build_duktape/duktape/
 tools/build_duktape/out/
+wasi-sdk*
