@@ -1359,7 +1359,7 @@ static JSValue js_os_signal(JSContext *ctx, JSValueConst this_val,
 }
 #endif
 
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__) || defined(__wasi__)
 static int64_t get_time_ms(void)
 {
     struct timespec ts;
