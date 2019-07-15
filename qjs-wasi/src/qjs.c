@@ -406,7 +406,9 @@ int main(int argc, char **argv)
             const char *str = "import * as std from 'std';\n"
                 "import * as os from 'os';\n"
                 "std.global.std = std;\n"
-                "std.global.os = os;\n";
+                "std.global.os = os;\n"
+                "std.global.setTimeout = os.setTimeout;\n"
+                "std.global.clearTimeout = os.clearTimeout;\n";
             eval_buf(ctx, str, strlen(str), "<input>", JS_EVAL_TYPE_MODULE);
         }
 
