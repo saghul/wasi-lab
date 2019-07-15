@@ -31,16 +31,6 @@
 #include <sys/time.h>
 #include <time.h>
 #include <fenv.h>
-/* WASI SDK does not define these yet. */
-#if !defined(FE_DOWNWARD)
-#define FE_DOWNWARD   0x400
-#endif
-#if !defined(FE_UPWARD)
-#define FE_UPWARD     0x800
-#endif
-#if !defined(FE_TOWARDZERO)
-#define FE_TOWARDZERO 0xc00
-#endif
 #include <math.h>
 #if defined(__APPLE__)
 #include <malloc/malloc.h>
@@ -70,7 +60,7 @@
 #define MALLOC_OVERHEAD  8
 #endif
 
-#if !defined(_WIN32)
+#if !(defined(_WIN32) || defined(__wasi__))
 /* define it if printf uses the RNDN rounding mode instead of RNDNA */
 #define CONFIG_PRINTF_RNDN
 #endif
