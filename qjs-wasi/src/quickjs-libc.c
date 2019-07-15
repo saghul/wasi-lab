@@ -1419,11 +1419,11 @@ static JSValue js_os_setTimeout(JSContext *ctx, JSValueConst this_val,
     JSOSTimer *th;
     JSValue obj;
 
-    if (JS_ToInt64(ctx, &delay, argv[0]))
-        return JS_EXCEPTION;
-    func = argv[1];
+    func = argv[0];
     if (!JS_IsFunction(ctx, func))
         return JS_ThrowTypeError(ctx, "not a function");
+    if (JS_ToInt64(ctx, &delay, argv[1]))
+        return JS_EXCEPTION;
     obj = JS_NewObjectClass(ctx, js_os_timer_class_id);
     if (JS_IsException(obj))
         return obj;
