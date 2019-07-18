@@ -1,0 +1,19 @@
+[package]
+name = "duktape"
+version = "0.0.1"
+description = "Duktape is an embeddable Javascript engine, with a focus on portability and compact footprint."
+readme = "README.md"
+repository = "https://github.com/saghul/wasi-lab"
+homepage = "https://duktape.org/"
+
+[[module]]
+name = "duktape"
+source = "build/duk.wasm"
+abi = "wasi"
+
+[module.interfaces]
+wasi = "0.0.0-unstable"
+
+[[command]]
+name = "duk"
+module = "duktape"
