@@ -14,7 +14,7 @@ Status: Runs! Crashes on uncaught excaptions (bug or feature?). Minimal repl.
 
 [QuickJS](https://bellard.org/quickjs/) JavaScript engine running on WASI.
 
-Status. Runs! No repl but files run.
+Status. Runs!
 
 ## License
 
