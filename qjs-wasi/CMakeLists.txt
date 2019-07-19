@@ -26,5 +26,6 @@ add_executable(qjs.wasm
     src/qjs.c
     src/quickjs-libc.c
     src/quickjs.c
+    src/repl.c
 )
 

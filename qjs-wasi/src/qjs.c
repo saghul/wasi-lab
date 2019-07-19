@@ -41,14 +41,9 @@
 #include "cutils.h"
 #include "quickjs-libc.h"
 
-#if !defined(__wasi__)
-#define CONFIG_REPL
-#endif
-
-#ifdef CONFIG_REPL
 extern const uint8_t repl[];
 extern const uint32_t repl_size;
-#endif
+
 #ifdef CONFIG_BIGNUM
 extern const uint8_t qjscalc[];
 extern const uint32_t qjscalc_size;
@@ -248,9 +243,7 @@ void help(void)
            "usage: " PROG_NAME " [options] [files]\n"
            "-h  --help         list options\n"
            "-e  --eval EXPR    evaluate EXPR\n"
-#ifdef CONFIG_REPL
            "-i  --interactive  go to interactive mode\n"
-#endif
            "-m  --module       load as ES6 module (default if .mjs file extension)\n"
 #ifdef CONFIG_BIGNUM
            "    --qjscalc      load the QJSCalc runtime (default if invoked as qjscalc)\n"
@@ -268,9 +261,7 @@ int main(int argc, char **argv)
     struct trace_malloc_data trace_data = { NULL };
     int optind;
     char *expr = NULL;
-#ifdef CONFIG_REPL
     int interactive = 0;
-#endif
     int dump_memory = 0;
     int trace_memory = 0;
     int empty_run = 0;
@@ -329,12 +320,10 @@ int main(int argc, char **argv)
                 fprintf(stderr, "qjs: missing expression for -e\n");
                 exit(2);
             }
-#ifdef CONFIG_REPL
             if (opt == 'i' || !strcmp(longopt, "interactive")) {
                 interactive++;
                 continue;
             }
-#endif
             if (opt == 'm' || !strcmp(longopt, "module")) {
                 module = 1;
                 continue;
@@ -417,10 +406,8 @@ int main(int argc, char **argv)
                 goto fail;
         } else
         if (optind >= argc) {
-#ifdef CONFIG_REPL
             /* interactive mode */
             interactive = 1;
-#endif
         } else {
             int eval_flags;
             const char *filename;
@@ -434,11 +421,10 @@ int main(int argc, char **argv)
             if (eval_file(ctx, filename, eval_flags))
                 goto fail;
         }
-#ifdef CONFIG_REPL
         if (interactive) {
-            js_std_eval_binary(ctx, repl, repl_size, 0);
+            //js_std_eval_binary(ctx, repl, repl_size, 0);
+            eval_buf(ctx, repl, repl_size, "<input>", JS_EVAL_TYPE_MODULE);
         }
-#endif
         js_std_loop(ctx);
     }
     
