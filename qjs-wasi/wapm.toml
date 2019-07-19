@@ -1,13 +1,13 @@
 [package]
-name = "quickjs"
+name = "saghul/quickjs"
 version = "0.0.1"
-description = "QuickJS is a small and embeddable Javascript engine. It supports the ES2019 specification including modules, asynchronous generators and proxies."
+description = "QuickJS is a small and embeddable JavaScript engine. It supports the ES2019 specification including modules, asynchronous generators and proxies."
 readme = "README.md"
 repository = "https://github.com/saghul/wasi-lab"
 homepage = "https://bellard.org/quickjs/"
 
 [[module]]
-name = "qjs"
+name = "quickjs"
 source = "build/qjs.wasm"
 abi = "wasi"
 
@@ -16,8 +16,8 @@ wasi = "0.0.0-unstable"
 
 [[command]]
 name = "qjs"
-module = "qjs"
+module = "quickjs"
 
 [[command]]
 name = "quickjs"
-module = "qjs"
+module = "quickjs"
