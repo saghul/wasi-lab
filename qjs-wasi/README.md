@@ -34,7 +34,7 @@ wasmtime --dir . build/qjs.wasm
 
 ```bash
 # Run a file
-wasmer run --dir=examples/ build/qjs.wasm -- examples/hello_world.js
+wasmer run --dir=examples/ build/qjs.wasm -- --module examples/hello_world.js
 
 # Run the REPL
 wasmer run --dir=. build/qjs.wasm
