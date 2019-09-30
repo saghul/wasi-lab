@@ -1,5 +1,5 @@
 [package]
-name = "saghul/duktape"
+name = "duktape"
 version = "0.0.1"
 description = "Duktape is an embeddable JavaScript engine, with a focus on portability and compact footprint."
 readme = "README.md"
