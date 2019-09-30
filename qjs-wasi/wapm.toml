@@ -1,5 +1,5 @@
 [package]
-name = "saghul/quickjs"
+name = "quickjs"
 version = "0.0.1"
 description = "QuickJS is a small and embeddable JavaScript engine. It supports the ES2019 specification including modules, asynchronous generators and proxies."
 readme = "README.md"
