@@ -28,8 +28,9 @@ import * as std from "std";
 import * as os from "os";
 
 (function(g) {
-    /* add a 'global' binding */
-    g.global = std.global;
+    /* add 'os' and 'std' bindings */
+    g.os = os;
+    g.std = std;
     
     /* close global objects */
     var Object = g.Object;
@@ -570,6 +571,8 @@ import * as os from "os";
                     obj = get_context_object(line, pos - base.length);
                     if (obj === null || obj === void 0)
                         return obj;
+                    if (obj === g && obj[base] === void 0)
+                        return eval(base);
                     else
                         return obj[base];
                 }
@@ -1101,9 +1104,9 @@ import * as os from "os";
             std.puts("\x1b[H\x1b[J");
         } else if (cmd === "q") {
             std.exit(0);
-        } else if (cmd === "a") {
+        } else if (has_jscalc && cmd === "a") {
             algebraicMode = true;
-        } else if (cmd === "n") {
+        } else if (has_jscalc && cmd === "n") {
             algebraicMode = false;
         } else {
             std.puts("Unknown directive: " + cmd + "\n");
@@ -1501,4 +1504,4 @@ import * as os from "os";
     
     cmd_start();
 
-})(std.global);
+})(globalThis);
