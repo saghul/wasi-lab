@@ -1,6 +1,6 @@
 [package]
 name = "quickjs"
-version = "0.0.1"
+version = "0.0.2"
 description = "QuickJS is a small and embeddable JavaScript engine. It supports the ES2019 specification including modules, asynchronous generators and proxies."
 readme = "README.md"
 repository = "https://github.com/saghul/wasi-lab"
