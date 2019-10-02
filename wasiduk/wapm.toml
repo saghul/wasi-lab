@@ -1,6 +1,6 @@
 [package]
 name = "duktape"
-version = "0.0.1"
+version = "0.0.2"
 description = "Duktape is an embeddable JavaScript engine, with a focus on portability and compact footprint."
 readme = "README.md"
 repository = "https://github.com/saghul/wasi-lab"
