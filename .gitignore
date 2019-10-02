@@ -1,6 +1,6 @@
 build
-tools/build_duktape/duktape/
-tools/build_duktape/out/
+wasiduk/tools/build_duktape/duktape/
+wasiduk/tools/build_duktape/out/
 wasi-sdk*
 wapm.lock
 wapm_packages
