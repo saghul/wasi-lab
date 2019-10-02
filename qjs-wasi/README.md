@@ -4,26 +4,40 @@ QuickJS is a small and embeddable JavaScript engine. It supports the ES2019 spec
 
 It optionally supports mathematical extensions such as big integers (BigInt), big floating point numbers (BigFloat) and operator overloading.
 
-Install it with:
-
-```bash
-wapm install -g quickjs
-```
-
 **Original Source**: https://bellard.org/quickjs/quickjs-2019-07-09.tar.xz
 
 **Modifications**: We made some changes to adapt the codebase to the [WASI interface](https://wapm.io/interface/wasi).
 
 ## Running
 
+### With wasmer
+
+Install it with:
+
+```bash
+wapm install -g quickjs
+```
+
 Without any arguments a simple REPL will be launched.
 
 ```bash
 # Run a file
-qjs --dir=. --module examples/hello_module.js
+qjs --dir=. examples/hello_module.js
 
 # Run the REPL
 qjs
+```
+
+### With wasmtime
+
+First build it by following the instructions in "Building".
+
+```bash
+# Run a file
+wasmtime --dir examples/ build/qjs.wasm -- examples/hello_module.js
+
+# Run the REPL
+wasmtime --dir . build/qjs.wasm
 ```
 
 ## Building
