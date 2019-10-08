@@ -4,7 +4,7 @@ QuickJS is a small and embeddable JavaScript engine. It supports the ES2019 spec
 
 It optionally supports mathematical extensions such as big integers (BigInt), big floating point numbers (BigFloat) and operator overloading.
 
-**Original Source**: https://bellard.org/quickjs/quickjs-2019-07-09.tar.xz
+**Original Source**: https://bellard.org/quickjs/quickjs-2019-09-18.tar.xz
 
 **Modifications**: We made some changes to adapt the codebase to the [WASI interface](https://wapm.io/interface/wasi).
 
