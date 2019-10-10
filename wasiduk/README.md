@@ -9,9 +9,10 @@ with a focus on **portability** and **compact** footprint.
 
 ## Running
 
-### With wasmer
+You can run `duktape` on your browser:
+https://webassembly.sh/?run-command=duk
 
-Install it with:
+Or you can run it locally in your shell:
 
 ```bash
 wapm install -g duktape
