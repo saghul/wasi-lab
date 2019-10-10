@@ -10,9 +10,10 @@ It optionally supports mathematical extensions such as big integers (BigInt), bi
 
 ## Running
 
-### With wasmer
+You can run `quickjs` on your browser:
+https://webassembly.sh/?run-command=qjs
 
-Install it with:
+Or you can run it locally in your shell with:
 
 ```bash
 wapm install -g quickjs
