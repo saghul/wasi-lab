@@ -43,7 +43,7 @@ wasmtime --dir . build/qjs.wasm
 
 ## Building
 
-The following script will download the WASI SDK and build the Wasm binary.
+The following script will install [`wasienv`](https://github.com/wasienv/wasienv) and build the Wasm binary.
 
 ```bash
 ./build.sh

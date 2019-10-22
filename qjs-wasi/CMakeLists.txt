@@ -19,7 +19,7 @@ add_definitions(
     -DCONFIG_VERSION="2019-07-09"
 )
 
-add_executable(qjs.wasm
+add_executable(qjs
     src/cutils.c
     src/libregexp.c
     src/libunicode.c
