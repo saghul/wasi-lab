@@ -42,7 +42,7 @@ wasmtime --dir . build/duk.wasm
 
 ## Building
 
-The following script will download the WASI SDK and build the WASM binary.
+The following script will install [`wasienv`](https://github.com/wasienv/wasienv) and build the Wasm binary.
 
 ```bash
 ./build.sh

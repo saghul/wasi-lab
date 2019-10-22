@@ -20,7 +20,7 @@ add_definitions(
     -DDUK_CMDLINE_CONSOLE_SUPPORT
 )
 
-add_executable(duk.wasm
+add_executable(duk
     src/duktape.c
     src/duk_console.c
     src/duk_cmdline.c
