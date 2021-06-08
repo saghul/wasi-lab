@@ -43,8 +43,31 @@ wasmtime --dir . build/qjs.wasm
 
 ## Building
 
+### With wasienv
+
 The following script will install [`wasienv`](https://github.com/wasienv/wasienv) and build the Wasm binary.
 
 ```bash
 ./build.sh
 ```
+
+### With Zig
+
+You will need nightly Zig which you can either build from source or download from the official website [here],
+under "master" heading.
+
+[here]: https://ziglang.org/download/
+
+```bash
+zig build
+```
+
+This will cross-compile the project to `wasm32-wasi` by default and build it in Debug mode. If you want to build the
+project in ReleaseFast (ReleaseFast is the equivalent for Release in other build systems), add `-Drelease-fast` option
+to the build invocation.
+
+```bash
+zig build -Drelease-fast
+```
+
+The runnable WASI module can be found in `zig-out/bin/qjs.wasm`.
