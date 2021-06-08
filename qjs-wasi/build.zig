@@ -1,7 +1,13 @@
 const std = @import("std");
 
 pub fn build(b: *std.build.Builder) !void {
-    const target = b.standardTargetOptions(.{});
+    // We will target wasm32-wasi by default.
+    const target = b.standardTargetOptions(.{
+        .default_target = .{
+            .cpu_arch = .wasm32,
+            .os_tag = .wasi,
+        },
+    });
     const mode = b.standardReleaseOptions();
 
     const qjs = b.addExecutable("qjs", null);
