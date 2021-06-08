@@ -20,6 +20,7 @@ pub fn build(b: *std.build.Builder) !void {
     defer flags.deinit();
     try flags.appendSlice(&.{
         "-funsigned-char",
+        "-fno-sanitize=undefined", // Delete this line to enable UBSAN in non-ReleaseFast builds.
         "-D_GNU_SOURCE",
         "-DCONFIG_VERSION=\"2019-07-09\"",
     });
